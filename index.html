@@ -32,13 +32,11 @@
 <script>
   function getLink() {
     const { value } = document.querySelector("#input")
-    const shareableLink = `${window.location.origin}/?spec=${btoa(value)}`
+    var url = new URL(window.location.origin);
+    url.searchParams.append('spec', value);
+    const shareableLink = url.toString()
     console.log(shareableLink)
     window.open(shareableLink, '_blank');
-  }
-
-  function b64ToUtf8(str) {
-    return decodeURIComponent(escape(window.atob(str)));
   }
 
   const params = new Proxy(new URLSearchParams(window.location.search), {
@@ -47,7 +45,8 @@
 
   window.onload = () => {
     if(params.spec) {
-      const specString = b64ToUtf8(params.spec)
+      console.log(params.spec)
+      const specString = params.spec
       const spec = JSON.parse(specString)
       window.ui = SwaggerUIBundle({
         spec,
